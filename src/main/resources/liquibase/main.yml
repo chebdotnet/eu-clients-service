@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - property:
+      name: now
+      value: ${database.currentDateTimeFunction}
+  - include:
+      file: liquibase/changelog.yml
+#  - include:
+#      file: liquibase/initial-data.yml
