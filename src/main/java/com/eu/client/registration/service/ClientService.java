@@ -5,11 +5,13 @@ import com.eu.client.registration.domain.ClientCountry;
 import com.eu.client.registration.domain.ClientRepository;
 import com.eu.client.registration.restcountries.CountryBean;
 import com.eu.client.registration.restcountries.RestCountriesApi;
+import com.eu.client.registration.service.validators.ClientRegisterValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static com.eu.client.registration.service.ClientNotFoundException.MESSAGE_TEMPLATE;
 
@@ -23,18 +25,17 @@ public class ClientService {
 
     private final ClientRepository repository;
 
-    private final ClientCountryValidator validator;
-
-    private final EmailUniqueValidator emailUniqueValidator;
+    private final List<ClientRegisterValidator> validators;
 
     private final RestCountriesApi restCountriesApi;
 
     @Transactional
     public void register(ClientBean bean) {
-        validator.validate(bean.getCountry());
-        emailUniqueValidator.validate(bean.getEmail());
+        validators.forEach(validator -> validator.validate(bean));
 
         Client client = toClient.convert(bean);
+
+        Client savedClient = repository.save(client);
 
         CountryBean countryBean = restCountriesApi.fetchCountryByCountryCode(bean.getCountry());
         ClientCountry clientCountry = ClientCountry.builder()
@@ -44,8 +45,7 @@ public class ClientService {
                 .client(client)
                 .build();
 
-        client.setClientCountry(clientCountry);
-        repository.save(client);
+        savedClient.setClientCountry(clientCountry);
     }
 
 
