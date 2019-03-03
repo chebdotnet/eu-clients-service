@@ -1,4 +1,4 @@
-package com.eu.client.registration.api;
+package com.eu.client.registration.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

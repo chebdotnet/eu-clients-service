@@ -1,8 +1,8 @@
 package com.eu.client.registration.api;
 
-
-import com.eu.client.registration.services.ClientBean;
-import com.eu.client.registration.services.ClientService;
+import com.eu.client.registration.service.ClientBean;
+import com.eu.client.registration.service.ClientDto;
+import com.eu.client.registration.service.ClientService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +27,14 @@ public class ClientController {
     @ApiOperation("Add client")
     @PostMapping(consumes = "application/json")
     @ResponseStatus(CREATED)
-    void addClient(@RequestBody @Valid ClientBean request){
+    void addClient(@RequestBody @Valid ClientBean request) {
         clientService.register(request);
     }
 
     @ApiOperation("Expose client data")
     @GetMapping(produces = "application/json", value = "{clientId}")
     @ResponseStatus(OK)
-    ClientDto getClient(@PathVariable("clientId") @ApiParam(value = "Client identifier") Long clientId){
+    ClientDto getClient(@PathVariable("clientId") @ApiParam(value = "Client identifier") Long clientId) {
         return clientService.getClient(clientId);
     }
 

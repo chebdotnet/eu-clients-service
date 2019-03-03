@@ -16,3 +16,6 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: validate
+
+countries-api:
+  url: https://restcountries.eu/rest/v2/

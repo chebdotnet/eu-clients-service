@@ -1,6 +1,5 @@
-package com.eu.client.registration.services;
+package com.eu.client.registration.service;
 
-import com.eu.client.registration.api.ClientDto;
 import com.eu.client.registration.domain.Client;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
