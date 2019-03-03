@@ -46,4 +46,60 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+        - addUniqueConstraint:
+            tableName: clients
+            columnNames: email
+            constraintName: uniq_email
     rollback:
+
+  - changeSet:
+      id: 2
+      author: aleksandrs.rihliks
+      context: main
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: clients_countries
+      changes:
+        - createSequence:
+            sequenceName: clients_countries_seq
+        - createTable:
+            tableName: clients_countries
+            columns:
+              - column:
+                  name: clients_countries_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: clients_countries_pkey
+                    nullable: false
+              - column:
+                  name: population
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: area
+                  type: numeric(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bordering_countries
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: clients_countries
+            baseColumnNames: client_id
+            constraintName: clients_countries_clients_client_id_fk
+            referencedTableName: clients
+            referencedColumnNames: client_id
+
+    rollback:
+

@@ -3,6 +3,7 @@ package com.eu.client.registration.api;
 import com.eu.client.registration.service.ClientBean;
 import com.eu.client.registration.service.ClientDto;
 import com.eu.client.registration.service.ClientService;
+import com.eu.client.registration.service.CountryDto;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,13 @@ public class ClientController {
     @ResponseStatus(OK)
     ClientDto getClient(@PathVariable("clientId") @ApiParam(value = "Client identifier") Long clientId) {
         return clientService.getClient(clientId);
+    }
+
+    @ApiOperation("Detailed data about users country captured from https://restcountries.eu/ at the time of registration")
+    @GetMapping(produces = "application/json", value = "{clientId}/country")
+    @ResponseStatus(OK)
+    CountryDto getClientCountry(@PathVariable("clientId") @ApiParam(value = "Client identifier") Long clientId) {
+        return clientService.getClientCountry(clientId);
     }
 
 }

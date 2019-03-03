@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.AUTO;
 
 @Data
@@ -32,10 +34,13 @@ public class Client {
     @Column(name = "country")
     private String country;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")
     private String password;
+
+    @OneToOne(mappedBy = "client", cascade = ALL, fetch = LAZY)
+    private ClientCountry clientCountry;
 
 }
