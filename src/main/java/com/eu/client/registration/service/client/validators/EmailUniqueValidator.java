@@ -1,11 +1,11 @@
-package com.eu.client.registration.service.validators;
+package com.eu.client.registration.service.client.validators;
 
 import com.eu.client.registration.domain.ClientRepository;
-import com.eu.client.registration.service.ClientBean;
+import com.eu.client.registration.service.client.ClientBean;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import static com.eu.client.registration.service.validators.ValidationException.EMAIL_UNIQUE_MESSAGE_TEMPLATE;
+import static com.eu.client.registration.service.client.validators.ValidationException.EMAIL_UNIQUE_MESSAGE_TEMPLATE;
 import static java.lang.String.format;
 
 @Component

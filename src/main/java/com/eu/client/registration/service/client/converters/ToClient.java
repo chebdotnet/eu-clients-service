@@ -1,13 +1,17 @@
-package com.eu.client.registration.service;
+package com.eu.client.registration.service.client.converters;
 
 import com.eu.client.registration.domain.Client;
+import com.eu.client.registration.service.client.ClientBean;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.util.DigestUtils.md5DigestAsHex;
-
 @Component
+@RequiredArgsConstructor
 public class ToClient implements Converter<ClientBean, Client> {
+
+    private final BCryptPasswordEncoder encoder;
 
     @Override
     public Client convert(ClientBean request) {
@@ -16,7 +20,7 @@ public class ToClient implements Converter<ClientBean, Client> {
                 .surname(request.getSurname())
                 .country(request.getCountry())
                 .email(request.getEmail())
-                .password(md5DigestAsHex(request.getPassword().getBytes()).toUpperCase())
+                .password(encoder.encode(request.getPassword()))
                 .build();
     }
 

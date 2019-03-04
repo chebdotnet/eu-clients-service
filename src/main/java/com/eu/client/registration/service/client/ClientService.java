@@ -1,19 +1,21 @@
-package com.eu.client.registration.service;
+package com.eu.client.registration.service.client;
 
 import com.eu.client.registration.domain.Client;
 import com.eu.client.registration.domain.ClientCountry;
 import com.eu.client.registration.domain.ClientRepository;
 import com.eu.client.registration.restcountries.CountryBean;
 import com.eu.client.registration.restcountries.RestCountriesApi;
-import com.eu.client.registration.service.validators.ClientRegisterValidator;
+import com.eu.client.registration.service.client.converters.ToClient;
+import com.eu.client.registration.service.client.converters.ToClientDto;
+import com.eu.client.registration.service.client.validators.ClientRegisterValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.eu.client.registration.service.ClientNotFoundException.MESSAGE_TEMPLATE;
 
 @Service
 @RequiredArgsConstructor
@@ -48,20 +50,25 @@ public class ClientService {
         savedClient.setClientCountry(clientCountry);
     }
 
-
-    public ClientDto getClient(Long clientId) {
-        Client client = repository.findById(clientId).orElseThrow(() -> new ClientNotFoundException(String.format(MESSAGE_TEMPLATE, clientId)));
+    public ClientDto getUserBasicInfo() {
+        Client client = findAuthClient();
         return toClientDto.convert(client);
     }
 
-    public CountryDto getClientCountry(Long clientId) {
-        Client client = repository.findById(clientId).orElseThrow(() -> new ClientNotFoundException(String.format(MESSAGE_TEMPLATE, clientId)));
+    public CountryDto getClientCountryInfo() {
+        Client client = findAuthClient();
+
         ClientCountry clientCountry = client.getClientCountry();
         return CountryDto.builder()
                 .area(clientCountry.getArea())
                 .population(clientCountry.getPopulation())
                 .borderingCountries(Arrays.asList(clientCountry.getBorderingCountries().split(";")))
                 .build();
+    }
+
+    private Client findAuthClient() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return repository.findByEmail(auth.getName()).orElseThrow(() -> new ClientNotFoundException(String.format(ClientNotFoundException.MESSAGE_TEMPLATE, auth.getName())));
     }
 
 }

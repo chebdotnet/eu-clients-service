@@ -19,4 +19,6 @@ public class CountryBean {
     BigDecimal area;
 
     List<String> borders;
+
+    String alpha3Code;
 }

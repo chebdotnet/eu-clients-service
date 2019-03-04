@@ -1,11 +1,8 @@
 package com.eu.client.registration.api;
 
-import com.eu.client.registration.service.ClientBean;
-import com.eu.client.registration.service.ClientDto;
-import com.eu.client.registration.service.ClientService;
-import com.eu.client.registration.service.CountryDto;
+import com.eu.client.registration.service.client.ClientBean;
+import com.eu.client.registration.service.client.ClientService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -30,20 +26,6 @@ public class ClientController {
     @ResponseStatus(CREATED)
     void addClient(@RequestBody @Valid ClientBean request) {
         clientService.register(request);
-    }
-
-    @ApiOperation("Expose client data")
-    @GetMapping(produces = "application/json", value = "{clientId}")
-    @ResponseStatus(OK)
-    ClientDto getClient(@PathVariable("clientId") @ApiParam(value = "Client identifier") Long clientId) {
-        return clientService.getClient(clientId);
-    }
-
-    @ApiOperation("Detailed data about users country captured from https://restcountries.eu/ at the time of registration")
-    @GetMapping(produces = "application/json", value = "{clientId}/country")
-    @ResponseStatus(OK)
-    CountryDto getClientCountry(@PathVariable("clientId") @ApiParam(value = "Client identifier") Long clientId) {
-        return clientService.getClientCountry(clientId);
     }
 
 }

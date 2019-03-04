@@ -1,4 +1,4 @@
-package com.eu.client.registration.service.validators;
+package com.eu.client.registration.service.client.validators;
 
 import org.springframework.web.bind.annotation.ResponseStatus;
 
