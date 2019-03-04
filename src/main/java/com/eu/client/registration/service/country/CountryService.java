@@ -2,7 +2,6 @@ package com.eu.client.registration.service.country;
 
 import com.eu.client.registration.restcountries.CountryBean;
 import com.eu.client.registration.restcountries.RestCountriesApi;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -21,13 +20,9 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class CountryService {
 
-    private final ObjectMapper mapper;
-
     private final RestCountriesApi restCountriesApi;
 
     public ShortestPathDto findTheShortestWay(String startCountry, String finishCountry) {
-        startCountry = startCountry.toUpperCase();
-        finishCountry = finishCountry.toUpperCase();
         try {
             Graph<String, DefaultEdge> directedGraph = buildGraph();
             DijkstraShortestPath<String, DefaultEdge> dijkstraAlg = new DijkstraShortestPath<>(directedGraph);

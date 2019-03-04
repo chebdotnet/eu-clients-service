@@ -31,7 +31,7 @@ public class CountryController {
     ShortestPathDto getShortestPath(@QueryParam("startCountry") @ApiParam(value = "Start country code") String startCountry,
                                     @QueryParam("finishCountry") @ApiParam(value = "Finish country code") String finishCountry) {
 
-        return countryService.findTheShortestWay(startCountry, finishCountry);
+        return countryService.findTheShortestWay(startCountry.toUpperCase(), finishCountry.toUpperCase());
 
     }
 
