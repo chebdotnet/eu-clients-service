@@ -1,0 +1,7 @@
+{
+  "name": "$name",
+  "surname": "$surname",
+  "country": "$country",
+  "email": "$email",
+  "password": "$password"
+}
