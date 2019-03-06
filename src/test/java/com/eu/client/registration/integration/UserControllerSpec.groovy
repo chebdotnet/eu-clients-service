@@ -38,7 +38,7 @@ class UserControllerSpec extends WireMockIntegrationSpec {
     @Shared
     static final BigDecimal MOCK_COUNTRY_AREA = 64559
 
-    List MOCK_COUNTRY_BORDERS = List.of("BLR", "EST", "LTU", "RUS")
+    List<String> MOCK_COUNTRY_BORDERS = List.of("BLR", "EST", "LTU", "RUS")
 
 
     @Autowired
