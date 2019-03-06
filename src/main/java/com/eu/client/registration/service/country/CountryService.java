@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.eu.client.registration.service.country.CountriesPathNotFoundException.MESSAGE_TEMPLATE;
+import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 @Service
@@ -29,7 +30,7 @@ public class CountryService {
             SingleSourcePaths<String, DefaultEdge> iPaths = dijkstraAlg.getPaths(startCountry);
             GraphPath graphPath = iPaths.getPath(finishCountry);
             if (isNull(graphPath)) {
-                throw new CountriesPathNotFoundException(String.format(MESSAGE_TEMPLATE, startCountry, finishCountry));
+                throw new CountriesPathNotFoundException(format(MESSAGE_TEMPLATE, startCountry, finishCountry));
             }
             List<DefaultEdge> edgeList = graphPath.getEdgeList();
             return ShortestPathDto.builder().path(edgeList.toString()).build();

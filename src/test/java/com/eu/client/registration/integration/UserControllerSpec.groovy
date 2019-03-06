@@ -113,7 +113,7 @@ class UserControllerSpec extends WireMockIntegrationSpec {
     }
 
 
-    void "should successfully get authorized country info captured by the user registration"() {
+    void "should successfully authenticate user and get country info captured by the user registration"() {
         given:
             String auth = MOCK_CLIENT_EMAIL + ":" + MOCK_CLIENT_PASSWORD
             String encoding = Base64.getEncoder().encodeToString(auth.getBytes())
@@ -131,6 +131,20 @@ class UserControllerSpec extends WireMockIntegrationSpec {
                 assert borderingCountries == MOCK_COUNTRY_BORDERS
             }
     }
+
+    void "should fail to get country info due to wrong authorization header"() {
+        given:
+            String auth = MOCK_CLIENT_EMAIL + ":12345"
+            String encoding = Base64.getEncoder().encodeToString(auth.getBytes())
+            HttpHeaders headers = new HttpHeaders()
+            headers.set('Authorization', "Basic " + encoding)
+            headers.set('Content-Type', APPLICATION_JSON_VALUE)
+        when:
+            ResponseEntity<ClientDto> response = testRestTemplate.exchange("http://127.0.0.1:$serverPort/api/user/country", HttpMethod.GET, new HttpEntity<>(headers), ClientDto.class)
+        then:
+           assert response.getStatusCode() == UNAUTHORIZED
+    }
+
 
 
 }

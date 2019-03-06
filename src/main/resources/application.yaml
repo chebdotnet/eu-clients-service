@@ -5,7 +5,7 @@ spring:
   h2:
     console:
       enabled: true
-      path: /h2
+
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:clients;DB_CLOSE_DELAY=-1
@@ -19,3 +19,13 @@ spring:
 
 countries-api:
   url: https://restcountries.eu/rest/v2/
+
+api:
+  documentation:
+    title: Demo service to register EU clients
+    description: Provides integration with restcountries service
+    version: 1
+    pathMapping: /
+    contact:
+      name: Aleksandrs Rihļiks
+      email: aleksandrs.rihliks@gmail.com

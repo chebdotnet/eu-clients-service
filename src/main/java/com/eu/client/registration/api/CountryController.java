@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.QueryParam;
 
@@ -26,11 +23,11 @@ public class CountryController {
 
     private final CountryService countryService;
 
-    @ApiOperation("Search the shortest way between countries")
+    @ApiOperation(value = "Search the shortest way between countries", notes = "Please use 'alpha3Code' countries codes like LVA, POL, PRT etc")
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
-    ShortestPathDto getShortestPath(@QueryParam("startCountry") @ApiParam(value = "Start country code") String startCountry,
-                                    @QueryParam("finishCountry") @ApiParam(value = "Finish country code") String finishCountry) {
+    ShortestPathDto getShortestPath(@ApiParam(value = "Start country code") @RequestParam("startCountry") String startCountry,
+                                    @ApiParam(value = "Finish country code") @RequestParam("finishCountry") String finishCountry) {
 
         return countryService.findTheShortestWay(startCountry.toUpperCase(), finishCountry.toUpperCase());
 

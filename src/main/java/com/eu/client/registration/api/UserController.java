@@ -5,6 +5,7 @@ import com.eu.client.registration.service.client.ClientDto;
 import com.eu.client.registration.service.client.ClientService;
 import com.eu.client.registration.service.client.CountryDto;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ public class UserController {
 
     private final ClientService clientService;
 
+    @Authorization(value = "BasicAuth", scopes = {})
     @ApiOperation("Expose client data")
     @GetMapping(value = "/info")
     @ResponseStatus(OK)
@@ -33,6 +35,7 @@ public class UserController {
         return clientService.getUserBasicInfo();
     }
 
+    @Authorization(value = "BasicAuth", scopes = {})
     @ApiOperation("Detailed data about users country captured from https://restcountries.eu/ at the time of registration")
     @GetMapping(value = "/country")
     @ResponseStatus(OK)
