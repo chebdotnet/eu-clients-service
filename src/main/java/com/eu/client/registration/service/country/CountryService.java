@@ -23,6 +23,7 @@ public class CountryService {
 
     private final RestCountriesApi restCountriesApi;
 
+    @SuppressWarnings("unchecked")
     public ShortestPathDto findTheShortestWay(String startCountry, String finishCountry) {
         try {
             Graph<String, DefaultEdge> directedGraph = buildGraph();
@@ -35,7 +36,7 @@ public class CountryService {
             List<DefaultEdge> edgeList = graphPath.getEdgeList();
             return ShortestPathDto.builder().path(edgeList.toString()).build();
         } catch (IllegalArgumentException e) {
-            throw new CountryIncorrectInputException("Seems the input data is invalid. Please re-check it!");
+            throw new CountryIncorrectInputException();
         }
     }
 

@@ -19,6 +19,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 public class ApiDocumentationConfig {
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
     Docket publicApi(ApiDocumentationProperties properties) {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -40,6 +41,7 @@ public class ApiDocumentationConfig {
         return apiContact.getName() + " (Email: " + apiContact.getEmail() + ")";
     }
 
+    @SuppressWarnings("Guava")
     private Predicate<String> publicApiPaths() {
         return regex("/api.*");
     }

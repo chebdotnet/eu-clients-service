@@ -17,6 +17,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class CountryController {
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     static final String PATH = "api/country";
 
     private final CountryService countryService;

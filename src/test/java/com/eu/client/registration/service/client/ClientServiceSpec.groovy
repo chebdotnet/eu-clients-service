@@ -46,7 +46,7 @@ class ClientServiceSpec extends Specification {
 
     ClientBean bean = new ClientBean()
 
-    ToClient toClient = Mock(ToClient);
+    ToClient toClient = Mock(ToClient)
 
     ToClientDto toClientDto = Mock(ToClientDto)
 
@@ -137,7 +137,7 @@ class ClientServiceSpec extends Specification {
             }
     }
 
-    def setSecurityContext() {
+    void setSecurityContext() {
         Authentication authentication = Mock(Authentication)
         authentication.getName() >> MOCK_CLIENT_EMAIL
         SecurityContext securityContext = Mock(SecurityContext)

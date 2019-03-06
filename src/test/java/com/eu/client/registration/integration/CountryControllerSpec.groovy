@@ -22,7 +22,7 @@ class CountryControllerSpec extends WireMockIntegrationSpec {
         WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/all"))
                 .willReturn(WireMock.aResponse()
                 .withHeader('Content-type', APPLICATION_JSON_VALUE)
-                .withBody(allCountriesResponse)));
+                .withBody(allCountriesResponse)))
     }
 
     void "should successfully find the shortest way between countries"() {

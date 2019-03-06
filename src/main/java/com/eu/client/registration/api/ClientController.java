@@ -18,6 +18,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class ClientController {
 
+    @SuppressWarnings({"WeakerAccess", "unused"})
     static final String PATH = "api/clients";
 
     private final ClientService clientService;

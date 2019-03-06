@@ -11,7 +11,7 @@ class CountryServiceSpec extends Specification {
 
 
 
-    RestCountriesApi restCountriesApi = Mock(RestCountriesApi);
+    RestCountriesApi restCountriesApi = Mock(RestCountriesApi)
 
     CountryBean firstCountryBean = Mock(CountryBean)
     CountryBean secondCountryBean = Mock(CountryBean)
@@ -21,7 +21,7 @@ class CountryServiceSpec extends Specification {
     @Subject
     CountryService service = new CountryService(restCountriesApi)
 
-    def "should find the shortest way between countries"() {
+    void "should find the shortest way between countries"() {
         given:
             firstCountryBean.getAlpha3Code() >> 'A'
             firstCountryBean.getBorders() >> List.of('B')
@@ -41,7 +41,7 @@ class CountryServiceSpec extends Specification {
     }
 
 
-    def "should not find a way and throw CountriesPathNotFoundException ex"() {
+    void "should not find a way and throw CountriesPathNotFoundException ex"() {
         given:
             firstCountryBean.getAlpha3Code() >> 'A'
             firstCountryBean.getBorders() >> List.of()
@@ -58,7 +58,7 @@ class CountryServiceSpec extends Specification {
             notFoundEx.message == format(CountriesPathNotFoundException.MESSAGE_TEMPLATE, 'A', 'B')
     }
 
-    def "should not find a way and throw CountryIncorrectInputException ex"() {
+    void "should not find a way and throw CountryIncorrectInputException ex"() {
         given:
             firstCountryBean.getAlpha3Code() >> 'A'
             firstCountryBean.getBorders() >> List.of()

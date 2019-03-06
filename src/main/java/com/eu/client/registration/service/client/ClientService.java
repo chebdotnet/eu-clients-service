@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 @Service
 @RequiredArgsConstructor
 public class ClientService {
@@ -37,7 +39,7 @@ public class ClientService {
 
         Client client = toClient.convert(bean);
 
-        Client savedClient = repository.save(client);
+        Client savedClient = repository.save(requireNonNull(client));
 
         CountryBean countryBean = restCountriesApi.fetchCountryByCountryCode(bean.getCountry());
         ClientCountry clientCountry = ClientCountry.builder()

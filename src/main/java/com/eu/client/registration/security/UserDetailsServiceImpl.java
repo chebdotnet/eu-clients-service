@@ -21,6 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final ClientRepository repository;
 
+    @SuppressWarnings("unchecked")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

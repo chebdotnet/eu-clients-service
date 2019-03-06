@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ToClientDto implements Converter<Client, ClientDto> {
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public ClientDto convert(Client client) {
         return ClientDto.builder()

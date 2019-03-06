@@ -51,13 +51,13 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
             WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY?fields=region"))
                     .willReturn(WireMock.aResponse()
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
-                    .withBody(regionResponse)));
+                    .withBody(regionResponse)))
 
             String lvCountryResponse = getRequestResourceText('lv-country.json',  ['population': MOCK_COUNTRY_POPULATION, 'area': MOCK_COUNTRY_AREA, 'borders':MOCK_COUNTRY_BORDERS])
             WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY?fields=population;area;borders"))
                     .willReturn(WireMock.aResponse()
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
-                    .withBody(lvCountryResponse)));
+                    .withBody(lvCountryResponse)))
 
             String createClientRequest = getRequestResourceText('create-client-request.json',
                     ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'country': MOCK_COUNTRY, 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
@@ -87,7 +87,7 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
             WireMock.stubFor(WireMock.get(WireMock.urlEqualTo('/alpha/jp?fields=region'))
                     .willReturn(WireMock.aResponse()
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
-                    .withBody(regionResponse)));
+                    .withBody(regionResponse)))
 
 
             String createClientRequest = getRequestResourceText('create-client-request.json',
