@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
@@ -22,7 +23,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @ApiOperation("Add client")
-    @PostMapping(consumes = "application/json")
+    @PostMapping(consumes = APPLICATION_JSON_VALUE)
     @ResponseStatus(CREATED)
     void addClient(@RequestBody @Valid ClientBean request) {
         clientService.register(request);

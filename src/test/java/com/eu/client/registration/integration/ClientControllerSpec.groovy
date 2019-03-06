@@ -1,6 +1,7 @@
 package com.eu.client.registration.integration
 
 import com.eu.client.registration.domain.ClientRepository
+import com.github.tomakehurst.wiremock.client.WireMock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
@@ -10,6 +11,7 @@ import spock.lang.Shared
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST
 import static org.springframework.http.HttpStatus.CREATED
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 
 class ClientControllerSpec extends WireMockIntegrationSpec {
 
@@ -28,6 +30,14 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
     @Shared
     static final String MOCK_CLIENT_PASSWORD = '12345678'
 
+    @Shared
+    static final Long MOCK_COUNTRY_POPULATION = 1961600
+
+    @Shared
+    static final BigDecimal MOCK_COUNTRY_AREA = 64559
+
+    List MOCK_COUNTRY_BORDERS = List.of("BLR", "EST", "LTU", "RUS")
+
     @Autowired
     TestRestTemplate testRestTemplate
 
@@ -36,11 +46,24 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
 
     void "should successfully add the first client and do no add the second client"() {
         given:
+
+            String regionResponse = getRequestResourceText('region.json', ['region': 'Europe'])
+            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY?fields=region"))
+                    .willReturn(WireMock.aResponse()
+                    .withHeader('Content-type', APPLICATION_JSON_VALUE)
+                    .withBody(regionResponse)));
+
+            String lvCountryResponse = getRequestResourceText('lv-country.json',  ['population': MOCK_COUNTRY_POPULATION, 'area': MOCK_COUNTRY_AREA, 'borders':MOCK_COUNTRY_BORDERS])
+            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY?fields=population;area;borders"))
+                    .willReturn(WireMock.aResponse()
+                    .withHeader('Content-type', APPLICATION_JSON_VALUE)
+                    .withBody(lvCountryResponse)));
+
             String createClientRequest = getRequestResourceText('create-client-request.json',
                     ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'country': MOCK_COUNTRY, 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
 
             HttpHeaders headers = new HttpHeaders()
-            headers.set('Content-Type', 'application/json')
+            headers.set('Content-Type', APPLICATION_JSON_VALUE)
             HttpEntity<String> request = new HttpEntity<>(createClientRequest, headers)
 
         when:
@@ -60,11 +83,18 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
 
     void "should no add client and get error because client is outside of Europe"() {
         given:
+        String regionResponse = getRequestResourceText('region.json', ['region': 'Asia'])
+            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo('/alpha/jp?fields=region'))
+                    .willReturn(WireMock.aResponse()
+                    .withHeader('Content-type', APPLICATION_JSON_VALUE)
+                    .withBody(regionResponse)));
+
+
             String createClientRequest = getRequestResourceText('create-client-request.json',
-                    ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'country': 'jp', 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
+                        ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'country': 'jp', 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
 
             HttpHeaders headers = new HttpHeaders()
-            headers.set('Content-Type', 'application/json')
+            headers.set('Content-Type', APPLICATION_JSON_VALUE)
             HttpEntity<String> request = new HttpEntity<>(createClientRequest, headers)
 
         when:

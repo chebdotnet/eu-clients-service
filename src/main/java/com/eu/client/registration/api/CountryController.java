@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.ws.rs.QueryParam;
 
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
@@ -26,7 +27,7 @@ public class CountryController {
     private final CountryService countryService;
 
     @ApiOperation("Search the shortest way between countries")
-    @GetMapping(produces = "application/json")
+    @GetMapping(produces = APPLICATION_JSON_VALUE)
     @ResponseStatus(OK)
     ShortestPathDto getShortestPath(@QueryParam("startCountry") @ApiParam(value = "Start country code") String startCountry,
                                     @QueryParam("finishCountry") @ApiParam(value = "Finish country code") String finishCountry) {

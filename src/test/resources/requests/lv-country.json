@@ -1,0 +1,10 @@
+{
+  "population": "$population",
+  "area": "$area",
+  "borders": [
+    "BLR",
+    "EST",
+    "LTU",
+    "RUS"
+  ]
+}

@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @RestController
-@RequestMapping(value = UserController.PATH)
+@RequestMapping(value = UserController.PATH, produces = APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class UserController {
 
@@ -26,14 +27,14 @@ public class UserController {
     private final ClientService clientService;
 
     @ApiOperation("Expose client data")
-    @GetMapping(produces = "application/json", value = "/info")
+    @GetMapping(value = "/info")
     @ResponseStatus(OK)
     ClientDto getUserBasicInfo() {
         return clientService.getUserBasicInfo();
     }
 
     @ApiOperation("Detailed data about users country captured from https://restcountries.eu/ at the time of registration")
-    @GetMapping(produces = "application/json", value = "/country")
+    @GetMapping(value = "/country")
     @ResponseStatus(OK)
     CountryDto getClientCountryInfo() {
         return clientService.getClientCountryInfo();
