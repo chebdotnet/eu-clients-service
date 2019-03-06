@@ -64,7 +64,7 @@ public class ClientService {
         return CountryDto.builder()
                 .area(clientCountry.getArea())
                 .population(clientCountry.getPopulation())
-                .borderingCountries(Arrays.asList(clientCountry.getBorderingCountries().split(";")))
+                .borderingCountries(List.of(clientCountry.getBorderingCountries().split(";")))
                 .build();
     }
 

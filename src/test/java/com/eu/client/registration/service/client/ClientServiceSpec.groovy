@@ -15,7 +15,6 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
 
-import static java.util.Arrays.asList
 import static java.util.Optional.of
 
 class ClientServiceSpec extends Specification {
@@ -54,7 +53,7 @@ class ClientServiceSpec extends Specification {
 
     ClientRegisterValidator secondValidator = Mock(ClientRegisterValidator)
 
-    List<ClientRegisterValidator> validators = asList(firstValidator, secondValidator)
+    List<ClientRegisterValidator> validators = List.of(firstValidator, secondValidator)
 
     ClientRepository repository = Mock(ClientRepository)
 
