@@ -16,3 +16,17 @@ submitted user's email must be used for name in auth form
 submitted user's password must be used for password in auth form
 
 The app can be tested through swagger ui or 3d party apps like Postman. 
+
+
+Client registration endpoint
+http://localhost:8080/api/clients
+
+User basic info endpoint
+http://localhost:8080/api/user/info
+
+Data about users country captured at registration endpoint 
+http://localhost:8080/api/user/counrty 
+
+Search the shortest way between countries
+http://localhost:8080/api/user/api/country?startCountry={$startCountry}&finishCountry={$finishCountry}
+For countries codes must be used alpha3Code code like LVA, POL, PRT etc
