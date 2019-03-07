@@ -19,9 +19,9 @@ class ClientCountryValidator implements ClientRegisterValidator {
 
     @Override
     public void validate(ClientBean bean) {
-        RegionBean regionBean = restCountriesApi.fetchRegionByCountryCode(bean.getCountry());
+        RegionBean regionBean = restCountriesApi.fetchRegionByCountryCode(bean.getCountryCode());
         if (!REGION_EUROPE.equals(regionBean.getRegion())) {
-            throw new ValidationException(format(MESSAGE_TEMPLATE, bean.getCountry()));
+            throw new ValidationException(format(MESSAGE_TEMPLATE, bean.getCountryCode()));
         }
     }
 

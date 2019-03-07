@@ -15,7 +15,7 @@ public class ToClientDto implements Converter<Client, ClientDto> {
                 .id(client.getId())
                 .name(client.getName())
                 .surname(client.getSurname())
-                .country(client.getCountry())
+                .country(client.getCountryCode())
                 .email(client.getEmail())
                 .build();
     }

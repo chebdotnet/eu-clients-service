@@ -25,22 +25,23 @@ public class Client {
     @GeneratedValue(generator = "clients_sequence", strategy = AUTO)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
     private String surname;
 
-    @Column(name = "country")
-    private String country;
+    @Column(name = "country", nullable = false)
+    private String countryCode;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "client", cascade = ALL, fetch = LAZY)
-    private ClientCountry clientCountry;
+    @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "country_id", referencedColumnName = "country_id")
+    private Country country;
 
 }

@@ -22,7 +22,7 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
     static final String MOCK_CLIENT_SURNAME = 'Doe'
 
     @Shared
-    static final String MOCK_COUNTRY = 'lv'
+    static final String MOCK_COUNTRY_CODE = 'lv'
 
     @Shared
     static final String MOCK_CLIENT_EMAIL = 'john.doe@test.com'
@@ -48,19 +48,19 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
         given:
 
             String regionResponse = getRequestResourceText('region.json', ['region': 'Europe'])
-            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY?fields=region"))
+            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY_CODE?fields=region"))
                     .willReturn(WireMock.aResponse()
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
                     .withBody(regionResponse)))
 
             String lvCountryResponse = getRequestResourceText('lv-country.json',  ['population': MOCK_COUNTRY_POPULATION, 'area': MOCK_COUNTRY_AREA, 'borders':MOCK_COUNTRY_BORDERS])
-            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY?fields=population;area;borders"))
+            WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY_CODE?fields=population;area;borders"))
                     .willReturn(WireMock.aResponse()
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
                     .withBody(lvCountryResponse)))
 
             String createClientRequest = getRequestResourceText('create-client-request.json',
-                    ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'country': MOCK_COUNTRY, 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
+                    ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'countryCode': MOCK_COUNTRY_CODE, 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
 
             HttpHeaders headers = new HttpHeaders()
             headers.set('Content-Type', APPLICATION_JSON_VALUE)
@@ -91,7 +91,7 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
 
 
             String createClientRequest = getRequestResourceText('create-client-request.json',
-                        ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'country': 'jp', 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
+                        ['name': MOCK_CLIENT_NAME, 'surname': MOCK_CLIENT_SURNAME, 'countryCode': 'jp', 'email': MOCK_CLIENT_EMAIL, 'password': MOCK_CLIENT_PASSWORD])
 
             HttpHeaders headers = new HttpHeaders()
             headers.set('Content-Type', APPLICATION_JSON_VALUE)

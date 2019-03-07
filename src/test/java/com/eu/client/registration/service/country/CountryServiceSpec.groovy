@@ -9,8 +9,6 @@ import static java.lang.String.format
 
 class CountryServiceSpec extends Specification {
 
-
-
     RestCountriesApi restCountriesApi = Mock(RestCountriesApi)
 
     CountryBean firstCountryBean = Mock(CountryBean)

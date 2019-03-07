@@ -1,24 +1,26 @@
 package com.eu.client.registration.service.client;
 
 import com.eu.client.registration.domain.Client;
-import com.eu.client.registration.domain.ClientCountry;
 import com.eu.client.registration.domain.ClientRepository;
+import com.eu.client.registration.domain.Country;
+import com.eu.client.registration.domain.CountryRepository;
 import com.eu.client.registration.restcountries.CountryBean;
 import com.eu.client.registration.restcountries.RestCountriesApi;
 import com.eu.client.registration.service.client.converters.ToClient;
 import com.eu.client.registration.service.client.converters.ToClientDto;
 import com.eu.client.registration.service.client.validators.ClientRegisterValidator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientService {
@@ -29,6 +31,8 @@ public class ClientService {
 
     private final ClientRepository repository;
 
+    private final CountryRepository countryRepository;
+
     private final List<ClientRegisterValidator> validators;
 
     private final RestCountriesApi restCountriesApi;
@@ -36,20 +40,26 @@ public class ClientService {
     @Transactional
     public void register(ClientBean bean) {
         validators.forEach(validator -> validator.validate(bean));
+        Country country = captureCountry(bean.getCountryCode());
+
 
         Client client = toClient.convert(bean);
+        requireNonNull(client).setCountry(country);
+        repository.save(requireNonNull(client));
+    }
 
-        Client savedClient = repository.save(requireNonNull(client));
+    private Country captureCountry(String countryCode) {
+        return countryRepository.findByCode(countryCode).orElseGet(() -> {
+            CountryBean countryBean = restCountriesApi.fetchCountryByCountryCode(countryCode);
+            Country country = Country.builder()
+                    .code(countryCode)
+                    .area(countryBean.getArea())
+                    .borderingCountries(String.join(";", countryBean.getBorders()))
+                    .population(countryBean.getPopulation())
+                    .build();
+            return countryRepository.save(country);
 
-        CountryBean countryBean = restCountriesApi.fetchCountryByCountryCode(bean.getCountry());
-        ClientCountry clientCountry = ClientCountry.builder()
-                .area(countryBean.getArea())
-                .borderingCountries(String.join(";", countryBean.getBorders()))
-                .population(countryBean.getPopulation())
-                .client(client)
-                .build();
-
-        savedClient.setClientCountry(clientCountry);
+        });
     }
 
     public ClientDto getUserBasicInfo() {
@@ -60,11 +70,11 @@ public class ClientService {
     public CountryDto getClientCountryInfo() {
         Client client = findAuthClient();
 
-        ClientCountry clientCountry = client.getClientCountry();
+        Country country = client.getCountry();
         return CountryDto.builder()
-                .area(clientCountry.getArea())
-                .population(clientCountry.getPopulation())
-                .borderingCountries(List.of(clientCountry.getBorderingCountries().split(";")))
+                .area(country.getArea())
+                .population(country.getPopulation())
+                .borderingCountries(List.of(country.getBorderingCountries().split(";")))
                 .build();
     }
 

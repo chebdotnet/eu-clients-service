@@ -1,8 +1,9 @@
 package com.eu.client.registration.service.client
 
 import com.eu.client.registration.domain.Client
-import com.eu.client.registration.domain.ClientCountry
+import com.eu.client.registration.domain.Country
 import com.eu.client.registration.domain.ClientRepository
+import com.eu.client.registration.domain.CountryRepository
 import com.eu.client.registration.restcountries.CountryBean
 import com.eu.client.registration.restcountries.RestCountriesApi
 import com.eu.client.registration.service.client.converters.ToClient
@@ -26,7 +27,7 @@ class ClientServiceSpec extends Specification {
     static final String MOCK_CLIENT_SURNAME = 'Doe'
 
     @Shared
-    static final String MOCK_COUNTRY = 'lv'
+    static final String MOCK_COUNTRY_CODE = 'lv'
 
     @Shared
     static final String MOCK_CLIENT_EMAIL = 'john.doe@test.com'
@@ -57,14 +58,16 @@ class ClientServiceSpec extends Specification {
 
     ClientRepository repository = Mock(ClientRepository)
 
+    CountryRepository countryRepository = Mock(CountryRepository);
+
     RestCountriesApi restCountriesApi = Mock(RestCountriesApi)
 
     @Subject
-    ClientService service = new ClientService(toClient, toClientDto, repository, validators, restCountriesApi)
+    ClientService service = new ClientService(toClient, toClientDto, repository, countryRepository, validators, restCountriesApi)
 
     Client client = Stub(Client)
 
-    Client savedClient = Mock(Client)
+    Country country = Mock(Country)
 
     CountryBean countryBean = Mock(CountryBean)
 
@@ -72,26 +75,39 @@ class ClientServiceSpec extends Specification {
         with(bean) {
             setName(MOCK_CLIENT_NAME)
             setSurname(MOCK_CLIENT_SURNAME)
-            setCountry(MOCK_COUNTRY)
+            setCountryCode(MOCK_COUNTRY_CODE)
             setEmail(MOCK_CLIENT_EMAIL)
             setPassword(MOCK_CLIENT_PASSWORD)
         }
     }
 
-    void "should register client"() {
-        given:
-            countryBean.population >> 100
-            countryBean.area >> 50
-            countryBean.borders >> List.of("BLR", "EST", "LTU", "RUS")
+    void "should register client when country already exists in db"() {
         when:
             service.register(bean)
         then:
             1 * firstValidator.validate(bean)
             1 * secondValidator.validate(bean)
+            1 * countryRepository.findByCode(MOCK_COUNTRY_CODE) >> Optional.of(country)
+            0 * restCountriesApi.fetchCountryByCountryCode(MOCK_COUNTRY_CODE)
             1 * toClient.convert(bean) >> client
-            1 * repository.save(client) >> savedClient
-            1 * restCountriesApi.fetchCountryByCountryCode(MOCK_COUNTRY) >> countryBean
-            1 * savedClient.setClientCountry(_ as ClientCountry)
+            1 * repository.save(client)
+    }
+
+    void "should register client when country does not exist in db yet"() {
+        given:
+            countryBean.population >> MOCK_COUNTRY_POPULATION
+            countryBean.area >> MOCK_COUNTRY_AREA
+            countryBean.borders >> MOCK_COUNTRY_BORDERS
+        when:
+            service.register(bean)
+        then:
+            1 * firstValidator.validate(bean)
+            1 * secondValidator.validate(bean)
+            1 * countryRepository.findByCode(MOCK_COUNTRY_CODE) >> Optional.empty()
+            1 * restCountriesApi.fetchCountryByCountryCode(MOCK_COUNTRY_CODE) >> countryBean
+            1 * countryRepository.save(_ as Country)
+            1 * toClient.convert(bean) >> client
+            1 * repository.save(client)
     }
 
     void "should get user basic info"() {
@@ -99,7 +115,7 @@ class ClientServiceSpec extends Specification {
             ClientDto clientDto = Mock(ClientDto){
                 getName() >> MOCK_CLIENT_NAME
                 getSurname() >> MOCK_CLIENT_SURNAME
-                getCountry() >> MOCK_COUNTRY
+                getCountry() >> MOCK_COUNTRY_CODE
                 getEmail() >> MOCK_CLIENT_EMAIL
             }
             setSecurityContext()
@@ -111,7 +127,7 @@ class ClientServiceSpec extends Specification {
             with (returnedClientDto) {
                 assert name == MOCK_CLIENT_NAME
                 assert surname == MOCK_CLIENT_SURNAME
-                assert country == MOCK_COUNTRY
+                assert country == MOCK_COUNTRY_CODE
                 assert email == MOCK_CLIENT_EMAIL
             }
     }
@@ -119,7 +135,7 @@ class ClientServiceSpec extends Specification {
     void "should get client country info"() {
         given:
             setSecurityContext()
-            client.getClientCountry() >> Mock(ClientCountry){
+            client.getCountry() >> Mock(Country){
                 getPopulation() >> MOCK_COUNTRY_POPULATION
                 getArea() >> MOCK_COUNTRY_AREA
                 getBorderingCountries() >> 'BLR;EST;LTU;RUS'

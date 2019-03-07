@@ -1,7 +1,7 @@
 {
   "name": "$name",
   "surname": "$surname",
-  "country": "$country",
+  "countryCode": "$countryCode",
   "email": "$email",
   "password": "$password"
 }

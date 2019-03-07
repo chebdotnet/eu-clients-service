@@ -2,7 +2,7 @@
 Demo service to register EU clients
 Provides integration with 3d party 'restcountries' service
     
-Used technologies : Java 11, Spring, Swagger, JGraphT, H2, Spock, Wiremock
+Used technologies : Java 11, Spring, Lombok, Swagger, JGraphT, H2, Spock, Wiremock
 
 Please use the next links
 

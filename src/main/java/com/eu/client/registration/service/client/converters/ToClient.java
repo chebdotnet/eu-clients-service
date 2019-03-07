@@ -19,7 +19,7 @@ public class ToClient implements Converter<ClientBean, Client> {
         return Client.builder()
                 .name(request.getName())
                 .surname(request.getSurname())
-                .country(request.getCountry())
+                .countryCode(request.getCountryCode())
                 .email(request.getEmail())
                 .password(encoder.encode(request.getPassword()))
                 .build();

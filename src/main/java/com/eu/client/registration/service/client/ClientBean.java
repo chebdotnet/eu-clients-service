@@ -22,7 +22,7 @@ public class ClientBean {
     private String surname;
 
     @NotEmpty
-    private String country;
+    private String countryCode;
 
     @Email
     private String email;

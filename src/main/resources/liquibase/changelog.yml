@@ -7,6 +7,55 @@ databaseChangeLog:
         - onFail: MARK_RAN
         - not:
             - tableExists:
+                tableName: countries
+      changes:
+        - createSequence:
+            sequenceName: countries_seq
+        - createTable:
+            tableName: countries
+            columns:
+              - column:
+                  name: country_id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: countries_pkey
+                    nullable: false
+              - column:
+                  name: code
+                  type: varchar(2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: population
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: area
+                  type: numeric(19,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: bordering_countries
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: countries
+            columnNames: code
+            constraintName: uniq_code
+
+    rollback:
+
+  - changeSet:
+      id: 2
+      author: aleksandrs.rihliks
+      context: main
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
                 tableName: clients
       changes:
         - createSequence:
@@ -20,6 +69,11 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                     primaryKeyName: clients_pkey
+                    nullable: false
+              - column:
+                  name: country_id
+                  type: bigint
+                  constraints:
                     nullable: false
               - column:
                   name: name
@@ -46,60 +100,14 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: clients
+            baseColumnNames: country_id
+            constraintName: countries_clients_country_id_fk
+            referencedTableName: countries
+            referencedColumnNames: country_id
         - addUniqueConstraint:
             tableName: clients
             columnNames: email
             constraintName: uniq_email
-    rollback:
-
-  - changeSet:
-      id: 2
-      author: aleksandrs.rihliks
-      context: main
-      preConditions:
-        - onFail: MARK_RAN
-        - not:
-            - tableExists:
-                tableName: clients_countries
-      changes:
-        - createSequence:
-            sequenceName: clients_countries_seq
-        - createTable:
-            tableName: clients_countries
-            columns:
-              - column:
-                  name: clients_countries_id
-                  type: bigint
-                  constraints:
-                    primaryKey: true
-                    primaryKeyName: clients_countries_pkey
-                    nullable: false
-              - column:
-                  name: population
-                  type: bigint
-                  constraints:
-                    nullable: false
-              - column:
-                  name: area
-                  type: numeric(19,2)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: bordering_countries
-                  type: varchar(100)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: client_id
-                  type: bigint
-                  constraints:
-                    nullable: false
-        - addForeignKeyConstraint:
-            baseTableName: clients_countries
-            baseColumnNames: client_id
-            constraintName: clients_countries_clients_client_id_fk
-            referencedTableName: clients
-            referencedColumnNames: client_id
-
-    rollback:
-
+      rollback:
