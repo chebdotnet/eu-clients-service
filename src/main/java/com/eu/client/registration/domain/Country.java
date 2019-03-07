@@ -7,9 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 
-import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.AUTO;
 
 @Data

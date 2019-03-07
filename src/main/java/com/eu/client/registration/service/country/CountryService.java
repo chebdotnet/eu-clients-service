@@ -1,5 +1,7 @@
 package com.eu.client.registration.service.country;
 
+import com.eu.client.registration.domain.Country;
+import com.eu.client.registration.domain.CountryRepository;
 import com.eu.client.registration.restcountries.CountryBean;
 import com.eu.client.registration.restcountries.RestCountriesApi;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,22 @@ import static java.util.Objects.isNull;
 public class CountryService {
 
     private final RestCountriesApi restCountriesApi;
+
+    private final CountryRepository repository;
+
+    public Country captureCountry(String countryCode) {
+        return repository.findByCode(countryCode).orElseGet(() -> {
+            CountryBean countryBean = restCountriesApi.fetchCountryByCountryCode(countryCode);
+            Country country = Country.builder()
+                    .code(countryCode)
+                    .area(countryBean.getArea())
+                    .borderingCountries(String.join(";", countryBean.getBorders()))
+                    .population(countryBean.getPopulation())
+                    .build();
+            return repository.save(country);
+
+        });
+    }
 
     @SuppressWarnings("unchecked")
     public ShortestPathDto findTheShortestWay(String startCountry, String finishCountry) {

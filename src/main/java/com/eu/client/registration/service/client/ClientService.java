@@ -3,12 +3,10 @@ package com.eu.client.registration.service.client;
 import com.eu.client.registration.domain.Client;
 import com.eu.client.registration.domain.ClientRepository;
 import com.eu.client.registration.domain.Country;
-import com.eu.client.registration.domain.CountryRepository;
-import com.eu.client.registration.restcountries.CountryBean;
-import com.eu.client.registration.restcountries.RestCountriesApi;
 import com.eu.client.registration.service.client.converters.ToClient;
 import com.eu.client.registration.service.client.converters.ToClientDto;
 import com.eu.client.registration.service.client.validators.ClientRegisterValidator;
+import com.eu.client.registration.service.country.CountryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -31,35 +29,17 @@ public class ClientService {
 
     private final ClientRepository repository;
 
-    private final CountryRepository countryRepository;
+    private final CountryService countryService;
 
     private final List<ClientRegisterValidator> validators;
-
-    private final RestCountriesApi restCountriesApi;
 
     @Transactional
     public void register(ClientBean bean) {
         validators.forEach(validator -> validator.validate(bean));
-        Country country = captureCountry(bean.getCountryCode());
-
-
+        Country country = countryService.captureCountry(bean.getCountryCode());
         Client client = toClient.convert(bean);
         requireNonNull(client).setCountry(country);
         repository.save(requireNonNull(client));
-    }
-
-    private Country captureCountry(String countryCode) {
-        return countryRepository.findByCode(countryCode).orElseGet(() -> {
-            CountryBean countryBean = restCountriesApi.fetchCountryByCountryCode(countryCode);
-            Country country = Country.builder()
-                    .code(countryCode)
-                    .area(countryBean.getArea())
-                    .borderingCountries(String.join(";", countryBean.getBorders()))
-                    .population(countryBean.getPopulation())
-                    .build();
-            return countryRepository.save(country);
-
-        });
     }
 
     public ClientDto getUserBasicInfo() {

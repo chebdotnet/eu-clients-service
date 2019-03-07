@@ -1,14 +1,12 @@
 package com.eu.client.registration.service.client
 
 import com.eu.client.registration.domain.Client
-import com.eu.client.registration.domain.Country
 import com.eu.client.registration.domain.ClientRepository
-import com.eu.client.registration.domain.CountryRepository
-import com.eu.client.registration.restcountries.CountryBean
-import com.eu.client.registration.restcountries.RestCountriesApi
+import com.eu.client.registration.domain.Country
 import com.eu.client.registration.service.client.converters.ToClient
 import com.eu.client.registration.service.client.converters.ToClientDto
 import com.eu.client.registration.service.client.validators.ClientRegisterValidator
+import com.eu.client.registration.service.country.CountryService
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
@@ -35,13 +33,10 @@ class ClientServiceSpec extends Specification {
     @Shared
     static final String MOCK_CLIENT_PASSWORD = '12345678'
 
-    @Shared
     static final Long MOCK_COUNTRY_POPULATION = 1961600
 
-    @Shared
     static final BigDecimal MOCK_COUNTRY_AREA = 64559
 
-    @Shared
     List MOCK_COUNTRY_BORDERS = List.of("BLR", "EST", "LTU", "RUS")
 
     ClientBean bean = new ClientBean()
@@ -58,18 +53,15 @@ class ClientServiceSpec extends Specification {
 
     ClientRepository repository = Mock(ClientRepository)
 
-    CountryRepository countryRepository = Mock(CountryRepository);
+    CountryService countryService = Mock(CountryService)
 
-    RestCountriesApi restCountriesApi = Mock(RestCountriesApi)
 
     @Subject
-    ClientService service = new ClientService(toClient, toClientDto, repository, countryRepository, validators, restCountriesApi)
+    ClientService service = new ClientService(toClient, toClientDto, repository, countryService, validators)
 
     Client client = Stub(Client)
 
     Country country = Mock(Country)
-
-    CountryBean countryBean = Mock(CountryBean)
 
     void setup() {
         with(bean) {
@@ -81,31 +73,13 @@ class ClientServiceSpec extends Specification {
         }
     }
 
-    void "should register client when country already exists in db"() {
+    void "should register client"() {
         when:
             service.register(bean)
         then:
             1 * firstValidator.validate(bean)
             1 * secondValidator.validate(bean)
-            1 * countryRepository.findByCode(MOCK_COUNTRY_CODE) >> Optional.of(country)
-            0 * restCountriesApi.fetchCountryByCountryCode(MOCK_COUNTRY_CODE)
-            1 * toClient.convert(bean) >> client
-            1 * repository.save(client)
-    }
-
-    void "should register client when country does not exist in db yet"() {
-        given:
-            countryBean.population >> MOCK_COUNTRY_POPULATION
-            countryBean.area >> MOCK_COUNTRY_AREA
-            countryBean.borders >> MOCK_COUNTRY_BORDERS
-        when:
-            service.register(bean)
-        then:
-            1 * firstValidator.validate(bean)
-            1 * secondValidator.validate(bean)
-            1 * countryRepository.findByCode(MOCK_COUNTRY_CODE) >> Optional.empty()
-            1 * restCountriesApi.fetchCountryByCountryCode(MOCK_COUNTRY_CODE) >> countryBean
-            1 * countryRepository.save(_ as Country)
+            1 * countryService.captureCountry(MOCK_COUNTRY_CODE) >> country
             1 * toClient.convert(bean) >> client
             1 * repository.save(client)
     }

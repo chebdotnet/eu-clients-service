@@ -53,7 +53,7 @@ class ClientControllerSpec extends WireMockIntegrationSpec {
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
                     .withBody(regionResponse)))
 
-            String lvCountryResponse = getRequestResourceText('lv-country.json',  ['population': MOCK_COUNTRY_POPULATION, 'area': MOCK_COUNTRY_AREA, 'borders':MOCK_COUNTRY_BORDERS])
+            String lvCountryResponse = getRequestResourceText('country.json',  ['population': MOCK_COUNTRY_POPULATION, 'area': MOCK_COUNTRY_AREA, 'borders':MOCK_COUNTRY_BORDERS])
             WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/alpha/$MOCK_COUNTRY_CODE?fields=population;area;borders"))
                     .willReturn(WireMock.aResponse()
                     .withHeader('Content-type', APPLICATION_JSON_VALUE)
