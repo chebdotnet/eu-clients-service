@@ -28,5 +28,5 @@ Data about users country captured at registration endpoint
 http://localhost:8080/api/user/counrty 
 
 Search the shortest way between countries
-http://localhost:8080/api/user/api/country?startCountry={$startCountry}&finishCountry={$finishCountry}
+http://localhost:8080/api/country?startCountry={$startCountry}&finishCountry={$finishCountry}
 For countries codes must be used alpha3Code code like LVA, POL, PRT etc
